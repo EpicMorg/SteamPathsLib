@@ -1,1 +1,9 @@
-
+language: csharp
+solution: solution-path/solution-name.sln
+install:
+  - nuget restore solution-path/solution-name.sln
+ matrix:
+  include:
+    - name: Library Build
+      script:
+      - msbuild /p:Configuration=Release solution-name.sln
