@@ -1,12 +1,13 @@
 os: windows
 language: csharp
-solution: solution-path/solution-name.sln
+solution: src\SteamPathsLib.sln
 services:
   - nuget
 install:
-  - nuget restore solution-path/solution-name.sln
+  - nuget restore src\SteamPathsLib.sln
 matrix:
   include:
     - name: Library Build
     script:
-    - msbuild /p:Configuration=Release solution-name.sln
+    - msbuild /p:Configuration=Release src\SteamPathsLib.sln
+    
