@@ -136,11 +136,23 @@ namespace EpicMorg.SteamPathsLib
             return null;
         }
 
-        public static bool IsInstalledApps(int number)
+        public static string GetInstalledAppKeyRegistryById(int appId)
         {
             try
             {
-                var appKey = _valveSteamAppsPattern + number;
+                return Registry.CurrentUser.OpenSubKey(_valveSteamAppsPattern + appId).ToString();
+            }
+            catch (Exception)
+            {
+                return null;
+            };
+        }
+
+        public static bool IsInstalledApps(int appId)
+        {
+            try
+            {
+                var appKey = _valveSteamAppsPattern + appId;
 
                 using (var key = Registry.CurrentUser.OpenSubKey(appKey))
                 {
@@ -155,5 +167,6 @@ namespace EpicMorg.SteamPathsLib
 
             return false;
         }
+        
     }
 }

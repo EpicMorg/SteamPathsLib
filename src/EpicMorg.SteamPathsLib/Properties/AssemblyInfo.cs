@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("EpicMorg.SteamPathsLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Steam Paths Library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("EpicMorg")]
 [assembly: AssemblyProduct("EpicMorg.SteamPathsLib")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © EpicMorg 2020")]
+[assembly: AssemblyTrademark("Valve")]
 [assembly: AssemblyCulture("")]
 
 // Установка значения False для параметра ComVisible делает типы в этой сборке невидимыми
