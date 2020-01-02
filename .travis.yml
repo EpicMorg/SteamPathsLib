@@ -7,7 +7,7 @@ install:
   - nuget restore src/EpicMorg.SteamPathsSolution.sln
 matrix:
   include:
-    - name: Library Build
+    name: Library Build
     script:
     - msbuild /p:Configuration=Release src/EpicMorg.SteamPathsSolution.sln
     
