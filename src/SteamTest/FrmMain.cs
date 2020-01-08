@@ -33,7 +33,8 @@ namespace SteamTest
             InitializeComponent();
             textBoxTestAppId.Value = (decimal)SOURCE_SDK_BASE_2013_SINGLEPLAYER_APP_ID;
             this.Text = Text + " " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-;        }
+            ;
+        }
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
@@ -85,7 +86,8 @@ namespace SteamTest
             try
             {
                 // Example of using this awesome library
-                var text = SteamPathsUtil.GetSteamKeyRegistry();
+                var steamData = SteamPathsUtil.GetSteamData();
+                var text = steamData != null ? steamData.RegistryKey : "";
 
                 checkBoxVavleSteamReg.Checked = true;
                 checkBoxVavleSteamReg.ForeColor = Color.Green;
@@ -126,7 +128,8 @@ namespace SteamTest
             try
             {
                 // Example of using this awesome library
-                var text = SteamPathsUtil.GetSteamExePath();
+                var steamData = SteamPathsUtil.GetSteamData();
+                var text = steamData != null ? steamData.SteamExe : "";
 
                 checkBoxVavleSteamExe.Checked = true;
                 checkBoxVavleSteamExe.ForeColor = Color.Green;
@@ -156,7 +159,8 @@ namespace SteamTest
             try
             {
                 // Example of using this awesome library
-                var text = SteamPathsUtil.GetSteamExePid();
+                var activeProcess = SteamPathsUtil.GetActiveProcessSteamData();
+                var text = (activeProcess != null ? activeProcess.PID : 0).ToString();
 
                 checkBoxVavleSteamPID.Checked = true;
                 checkBoxVavleSteamPID.ForeColor = Color.Green;
@@ -187,7 +191,8 @@ namespace SteamTest
             try
             {
                 // Example of using this awesome library
-                var text = SteamPathsUtil.GetSteamDirectoryPath();
+                var steamData = SteamPathsUtil.GetSteamData();
+                var text = steamData != null ? steamData.SteamPath : "";
 
                 checkBoxVavleSteamPath.Checked = true;
                 checkBoxVavleSteamPath.ForeColor = Color.Green;
@@ -217,7 +222,8 @@ namespace SteamTest
             try
             {
                 // Example of using this awesome library
-                var text = SteamPathsUtil.GetOriginalSourceModDirectoryPath();
+                var steamData = SteamPathsUtil.GetSteamData();
+                var text = steamData != null ? steamData.SourceModInstallPath : "";
 
                 checkBoxVavleSteamSmodPath.Checked = true;
                 checkBoxVavleSteamSmodPath.ForeColor = Color.Green;
@@ -261,10 +267,12 @@ namespace SteamTest
             CheckSteamAppById(appId, txtBoxVavleSteamAppsCustom, checkBoxVavleSteamAppsCustom, checkBoxVavleSteamAppsCustomInstalled);
         }
 
-            private void CheckSteamAppById(int appId, TextBox outputTextBox, CheckBox outputCheckBox, CheckBox outputInstalledCheckBox)
+        private void CheckSteamAppById(int appId, TextBox outputTextBox, CheckBox outputCheckBox, CheckBox outputInstalledCheckBox)
         {
-            var check = SteamPathsUtil.IsInstalledApps(appId);
-            var path = SteamPathsUtil.GetInstalledAppKeyRegistryById(appId);
+            var appData = SteamPathsUtil.GetSteamAppDataById(appId);
+
+            var check = appData != null ? appData.Installed : false;
+            var path = appData != null ? appData.RegistryKey : "";
 
             outputTextBox.Text = path;
 

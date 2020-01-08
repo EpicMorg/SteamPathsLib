@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="model\ActiveProcessSteamData.cs" />
+    <Compile Include="model\SteamAppData.cs" />
+    <Compile Include="model\SteamData.cs" />
     <Compile Include="SteamPathsUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

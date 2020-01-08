@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EpicMorg.SteamPathsLib.model;
 using Microsoft.Win32;
 
 namespace EpicMorg.SteamPathsLib
@@ -13,38 +14,11 @@ namespace EpicMorg.SteamPathsLib
 
         private static readonly string _valveSteamAppsPattern = @"Software\Valve\Steam\Apps\";
 
-        public static Dictionary<string, string> GetInfo()
-        {
-            var result = new Dictionary<string, string>();
-
-            result["ValveKeyRegistry"] = GetValveKeyRegistry();
-            result["SteamKeyRegistry"] = GetSteamKeyRegistry();
-            result["SteamAppsKeyRegistry"] = GetSteamAppsKeyRegistry();
-            result["SteamDirectoryPath"] = GetSteamDirectoryPath();
-            result["SteamExePath"] = GetSteamExePath();
-            result["SteamExePid"] = GetSteamExePid();
-            result["OriginalSourceModDirectoryPath"] = GetOriginalSourceModDirectoryPath();
-
-            return result;
-        }
-
         public static string GetValveKeyRegistry()
         {
             try
             {
                 return Registry.CurrentUser.OpenSubKey(_valveKey).ToString();
-            }
-            catch (Exception)
-            {
-                return null;
-            };
-        }
-
-        public static string GetSteamKeyRegistry()
-        {
-            try
-            {
-                return Registry.CurrentUser.OpenSubKey(_valveSteamKey).ToString();
             }
             catch (Exception)
             {
@@ -64,109 +38,80 @@ namespace EpicMorg.SteamPathsLib
             };
         }
 
-        public static string GetSteamDirectoryPath()
+        public static ActiveProcessSteamData GetActiveProcessSteamData()
         {
             try
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(_valveSteamKey))
-                {
-                    var path = key.GetValue("SteamPath").ToString();
-                    if (path != @"")
-                    {
-                        return path;
-                    }
-                }
-            }
-            catch (Exception) { };
+                var regData = Registry.CurrentUser.OpenSubKey(_valveActiveProcessPID);
 
-            return null;
-        }
+                var result = new ActiveProcessSteamData();
 
-        public static string GetSteamExePath()
-        {
-            try
-            {
-                using (var key = Registry.CurrentUser.OpenSubKey(_valveSteamKey))
-                {
-                    var path = key.GetValue("SteamExe").ToString();
-                    if (path != @"")
-                    {
-                        return path;
-                    }
-                }
-            }
-            catch (Exception) { };
+                result.RegistryKey = regData.ToString();
+                result.PID = Convert.ToInt32((regData.GetValue("pid") ?? 0));
 
-            return null;
-        }
-
-        public static string GetSteamExePid()
-        {
-            try
-            {
-                using (var key = Registry.CurrentUser.OpenSubKey(_valveActiveProcessPID))
-                {
-                    var pid = key.GetValue("pid").ToString();
-                    if (pid != @"0")
-                    {
-                        return pid;
-                    }
-                }
-            }
-            catch (Exception) { };
-
-            return null;
-        }
-
-        public static string GetOriginalSourceModDirectoryPath()
-        {
-            try
-            {
-                using (var key = Registry.CurrentUser.OpenSubKey(_valveSteamKey))
-                {
-                    var path = key.GetValue("SourceModInstallPath").ToString();
-                    if (path != @"")
-                    {
-                        return path;
-                    }
-                }
-            }
-            catch (Exception) { };
-
-            return null;
-        }
-
-        public static string GetInstalledAppKeyRegistryById(int appId)
-        {
-            try
-            {
-                return Registry.CurrentUser.OpenSubKey(_valveSteamAppsPattern + appId).ToString();
+                return result;
             }
             catch (Exception)
             {
                 return null;
-            };
+            }
         }
 
-        public static bool IsInstalledApps(int appId)
+        public static SteamAppData GetSteamAppDataById(int appId)
+        {
+            var appKey = _valveSteamAppsPattern + appId;
+
+            try
+            {
+                var regData = Registry.CurrentUser.OpenSubKey(appKey);
+
+                var result = new SteamAppData();
+
+                result.RegistryKey = regData.ToString();
+                result.Name = (regData.GetValue("Name") ?? "").ToString();
+
+                result.AppId = appId;
+
+                result.Installed = (regData.GetValue("Installed") ?? 0).Equals(1);
+                result.Updating = (regData.GetValue("Updating") ?? 0).Equals(1);
+                result.Runnig = (regData.GetValue("Running") ?? 0).Equals(1);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static SteamData GetSteamData()
         {
             try
             {
-                var appKey = _valveSteamAppsPattern + appId;
+                var regData = Registry.CurrentUser.OpenSubKey(_valveSteamKey);
 
-                using (var key = Registry.CurrentUser.OpenSubKey(appKey))
-                {
-                    var installedValue = key.GetValue("Installed");
-                    if (installedValue.Equals(1))
-                    {
-                        return true;
-                    }
-                }
+                var result = new SteamData();
+
+                result.RegistryKey = regData.ToString();
+                result.LastGameNameUsed = (regData.GetValue("LastGameNameUsed") ?? "").ToString();
+                result.SourceModInstallPath = (regData.GetValue("SourceModInstallPath") ?? "").ToString();
+                result.SteamExe = (regData.GetValue("SteamExe") ?? "").ToString();
+                result.SteamPath = (regData.GetValue("SteamPath") ?? "").ToString();
+                result.Language = (regData.GetValue("Language") ?? "").ToString();
+                result.PseudoUUID = (regData.GetValue("PseudoUUID") ?? "").ToString();
+                result.ModInstallPath = (regData.GetValue("ModInstallPath") ?? "").ToString();
+
+                result.RunningAppID = Convert.ToInt32((regData.GetValue("RunningAppID") ?? "0").ToString());
+
+                result.RememberPassword = (regData.GetValue("RememberPassword") ?? 0).Equals(1);
+                result.AlreadyRetriedOfflineMode = (regData.GetValue("AlreadyRetriedOfflineMode") ?? 0).Equals(1);
+
+                return result;
             }
-            catch (Exception) { };
-
-            return false;
+            catch (Exception)
+            {
+                return null;
+            }
         }
-        
     }
 }
