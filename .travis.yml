@@ -1,13 +1,13 @@
-os: windows
-language: csharp
-solution: src/EpicMorg.SteamPathsSolution.sln
-services:
-  - nuget
-install:
-  - nuget restore src/EpicMorg.SteamPathsSolution.sln
-matrix:
-  include:
-    name: Library Build
-    script:
-    - msbuild /p:Configuration=Release src/EpicMorg.SteamPathsSolution.sln
+#os: windows
+#language: csharp
+#solution: src/EpicMorg.SteamPathsSolution.sln
+#services:
+#  - nuget
+#install:
+#  - nuget restore src/EpicMorg.SteamPathsSolution.sln
+#matrix:
+#  include:
+#    name: Library Build
+#    script:
+#    - msbuild /p:Configuration=Release src/EpicMorg.SteamPathsSolution.sln
     
