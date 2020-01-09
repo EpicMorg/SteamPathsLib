@@ -2,6 +2,7 @@ Remove-Item './lib/net48/dummy_file' -Force
 Remove-Item './lib/net472/dummy_file' -Force
 Remove-Item './lib/net462/dummy_file' -Force
 Remove-Item './lib/net452/dummy_file' -Force
+Remove-Item './*.nupkg' -Force
 
 & nuget.exe pack ./EpicMorg.SteamPathsLib.nuspec
 
