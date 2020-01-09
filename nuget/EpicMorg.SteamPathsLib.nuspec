@@ -3,7 +3,7 @@
     <metadata minClientVersion="3.3">
         <id>EpicMorg.SteamPathsLib</id>
 		<title>Steam Paths Library</title>
-        <version>1.0.0.0</version>
+        <version>1.1.0.0</version>
         <authors>EpicMorgDev, AurZum, stam</authors>
 		<owners>EpicMorgDev, AurZum, stam</owners>
 		<language>en-US</language>
@@ -16,12 +16,12 @@
         <description>Small helper for getting som registry keys of Steam.</description>
         <copyright>Copyright ©2020 EpicMorg</copyright>
         <tags>steam epicmorg path helper</tags>
-		<dependencies>
-			<group targetFramework=".NETFramework4.8.0" />
-		</dependencies>
     </metadata>
     <files>
 		<file src="lib\net48\*.dll" target="lib\net48" />
+		<file src="lib\net47\*.dll" target="lib\net47" />
+		<file src="lib\net46\*.dll" target="lib\net46" />
+		<file src="lib\net45\*.dll" target="lib\net45" />
 		<file src="images\*" target="images" />
     </files>
 </package>
