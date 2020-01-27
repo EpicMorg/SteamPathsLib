@@ -3,7 +3,7 @@
     <metadata minClientVersion="3.3">
         <id>EpicMorg.SteamPathsLib</id>
 		<title>Steam Paths Library</title>
-        <version>1.1.0.0</version>
+        <version>1.1.0.1</version>
         <authors>EpicMorgDev, AurZum, stam</authors>
 		<owners>EpicMorgDev, AurZum, stam</owners>
 		<language>en-US</language>
@@ -14,13 +14,24 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <releaseNotes>Refractoring API. Added new info about steam and steam application.</releaseNotes>
         <description>Small helper for getting some registry keys of Steam.</description>
-        <copyright>Copyright ©2020 EpicMorg</copyright>
+        <copyright>Copyright © 2020 EpicMorg</copyright>
         <tags>steam epicmorg registry path helper</tags>
 		<dependencies>
-			<group targetFramework=".NETFramework4.8.0" />
-			<group targetFramework=".NETFramework4.7.2" />
-			<group targetFramework=".NETFramework4.6.2" />
-			<group targetFramework=".NETFramework4.5.2" />
+			<group targetFramework=".NETFramework4.8.0">
+				<dependency id="Gameloop.Vdf" version="0.5.0" />
+			</group>
+			<group targetFramework=".NETFramework4.7.2">
+				<dependency id="Gameloop.Vdf" version="0.5.0" />
+			</group>
+			<group targetFramework=".NETFramework4.6.2">
+				<dependency id="Gameloop.Vdf" version="0.5.0" />
+			</group>
+			<group targetFramework=".NETFramework4.5.2">
+				<dependency id="Gameloop.Vdf" version="0.5.0" />
+			</group>
+			<group targetFramework=".NETFramework4.5">
+				<dependency id="Gameloop.Vdf" version="0.5.0" />
+			</group>
 		</dependencies>
     </metadata>
     <files>
@@ -28,6 +39,7 @@
 		<file src="lib\net472\*.dll" target="lib\net472" />
 		<file src="lib\net462\*.dll" target="lib\net462" />
 		<file src="lib\net452\*.dll" target="lib\net452" />
+		<file src="lib\net45\*.dll" target="lib\net45" />
 		<file src="images\*" target="images" />
     </files>
 </package>
