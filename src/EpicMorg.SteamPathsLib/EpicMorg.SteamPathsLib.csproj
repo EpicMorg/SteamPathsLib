@@ -45,14 +45,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="model\ActiveProcessSteamData.cs" />
-    <Compile Include="model\SteamAppData.cs" />
-    <Compile Include="model\SteamData.cs" />
+    <Compile Include="Model\ActiveProcessSteamRegistryData.cs" />
+    <Compile Include="Model\ConfigSteamData.cs" />
+    <Compile Include="Model\LibrarySteamData.cs" />
+    <Compile Include="Model\SteamAppManifestData.cs" />
+    <Compile Include="Model\SteamAppRegistryData.cs" />
+    <Compile Include="Model\SteamRegistryData.cs" />
     <Compile Include="SteamPathsUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="steam.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Gameloop.Vdf">
+      <Version>0.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

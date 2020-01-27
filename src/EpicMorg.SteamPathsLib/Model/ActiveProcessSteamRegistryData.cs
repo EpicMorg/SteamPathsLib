@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EpicMorg.SteamPathsLib.model
+namespace EpicMorg.SteamPathsLib.Model
 {
-    public class ActiveProcessSteamData
+    public class ActiveProcessSteamRegistryData
     {
         public string RegistryKey;
 

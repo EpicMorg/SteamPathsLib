@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EpicMorg.SteamPathsLib.model
+namespace EpicMorg.SteamPathsLib.Model
 {
-    public class SteamAppData
+    public class SteamAppRegistryData
     {
         public string RegistryKey;
         public string Name;
