@@ -97,71 +97,83 @@ namespace EpicMorg.SteamPathsLib {
             }
         }
         public static ConfigSteamData GetSteamConfig() {
-            var result = new ConfigSteamData();
-            var libraryPaths = new List<string>();
+            try {
+                var result = new ConfigSteamData();
+                var libraryPaths = new List<string>();
 
-            var steamPath = new DirectoryInfo(GetSteamData().SteamPath).FullName;
-            var configPath = Path.Combine(steamPath, "config", "config.vdf");
+                var steamPath = new DirectoryInfo(GetSteamData().SteamPath).FullName;
+                var configPath = Path.Combine(steamPath, "config", "config.vdf");
 
-            libraryPaths.Add(Path.Combine(steamPath, "steamapps"));
+                libraryPaths.Add(Path.Combine(steamPath, "steamapps"));
 
-            dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
-            var configLibraryPaths = ((VObject)configObject.Software.Valve.Steam)
-                .Children()
-                .Where(item => item.Key.StartsWith("BaseInstallFolder"))
-                .Select(item => item.Value.ToString())
-                .Select(line => new DirectoryInfo(line).FullName)
-                .Select(line => Path.Combine(line, "steamapps"));
+                dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
+                var configLibraryPaths = ((VObject)configObject.Software.Valve.Steam)
+                    .Children()
+                    .Where(item => item.Key.StartsWith("BaseInstallFolder"))
+                    .Select(item => item.Value.ToString())
+                    .Select(line => new DirectoryInfo(line).FullName)
+                    .Select(line => Path.Combine(line, "steamapps"));
 
-            libraryPaths.AddRange(configLibraryPaths);
+                libraryPaths.AddRange(configLibraryPaths);
 
-            result.SteamLibraryFolders = libraryPaths.ToArray();
+                result.SteamLibraryFolders = libraryPaths.ToArray();
 
-            return result;
+                return result;
+            } catch (Exception) {
+                return null;
+            }
         }
 
         public static List<LibrarySteamData> GetLibrarySteamDataList() {
-            var configData = GetSteamConfig();
-            var result = new List<LibrarySteamData>();
+            try {
+                var configData = GetSteamConfig();
+                var result = new List<LibrarySteamData>();
 
-            foreach (var path in configData.SteamLibraryFolders) {
-                var libraryData = new LibrarySteamData();
-                libraryData.Path = path;
-                libraryData.AppManifestDataList = new List<SteamAppManifestData>();
+                foreach (var path in configData.SteamLibraryFolders) {
+                    var libraryData = new LibrarySteamData();
+                    libraryData.Path = path;
+                    libraryData.AppManifestDataList = new List<SteamAppManifestData>();
 
-                var files = new DirectoryInfo(path).GetFiles("appmanifest_*.acf");
+                    var files = new DirectoryInfo(path).GetFiles("appmanifest_*.acf");
 
-                foreach (var file in files) {
-                    var appData = new SteamAppManifestData();
-                    dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
+                    foreach (var file in files) {
+                        var appData = new SteamAppManifestData();
+                        dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
 
-                    appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
-                    appData.Name = appManifestObject.name.Value;
-                    appData.InstallDir = appManifestObject.installdir.Value;
+                        appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
+                        appData.Name = appManifestObject.name.Value;
+                        appData.InstallDir = appManifestObject.installdir.Value;
 
-                    appData.Path = Path.Combine(path, "common", appData.InstallDir);
+                        appData.Path = Path.Combine(path, "common", appData.InstallDir);
 
-                    libraryData.AppManifestDataList.Add(appData);
+                        libraryData.AppManifestDataList.Add(appData);
+                    }
+
+                    result.Add(libraryData);
                 }
-         
-                result.Add(libraryData);
-            }
 
-            return result;
+                return result;
+            } catch (Exception) {
+                return null;
+            }
         }
 
         public static List<SteamAppManifestData> GetAllSteamAppManifestData() {
-            var result = new List<SteamAppManifestData>();
+            try {
+                var result = new List<SteamAppManifestData>();
 
-            var libraries = GetLibrarySteamDataList();
+                var libraries = GetLibrarySteamDataList();
 
-            foreach (var library in libraries) {
-                result.AddRange(library.AppManifestDataList);
+                foreach (var library in libraries) {
+                    result.AddRange(library.AppManifestDataList);
+                }
+
+                return result;
+            } catch (Exception) {
+                return null;
             }
-
-            return result;
         }
 
-        public static SteamAppManifestData GetSteamAppManifestDataById(int appId) => GetAllSteamAppManifestData().FirstOrDefault(appData => appData.AppId == appId);
+        public static SteamAppManifestData GetSteamAppManifestDataById(int appId) => GetAllSteamAppManifestData()?.FirstOrDefault(appData => appData.AppId == appId);
     }
 }
