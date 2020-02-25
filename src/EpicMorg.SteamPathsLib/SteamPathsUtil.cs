@@ -137,23 +137,29 @@ namespace EpicMorg.SteamPathsLib {
                     var files = new DirectoryInfo(path).GetFiles("appmanifest_*.acf");
 
                     foreach (var file in files) {
-                        var appData = new SteamAppManifestData();
-                        dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
+                        try {
+                            var appData = new SteamAppManifestData();
+                            dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
 
-                        appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
-                        appData.Name = appManifestObject.name.Value;
-                        appData.InstallDir = appManifestObject.installdir.Value;
+                            appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
+                            appData.Name = appManifestObject.name.Value;
+                            appData.InstallDir = appManifestObject.installdir.Value;
 
-                        appData.Path = Path.Combine(path, "common", appData.InstallDir);
+                            appData.Path = Path.Combine(path, "common", appData.InstallDir);
 
-                        libraryData.AppManifestDataList.Add(appData);
+                            libraryData.AppManifestDataList.Add(appData);
+                        } catch (Exception e) {
+                            Console.WriteLine(e);
+                        }
                     }
 
                     result.Add(libraryData);
                 }
 
                 return result;
-            } catch (Exception) {
+            } catch (Exception e) {
+                Console.WriteLine(e);
+
                 return null;
             }
         }
