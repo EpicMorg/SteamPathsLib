@@ -33,7 +33,6 @@ namespace SteamTest
             InitializeComponent();
             textBoxTestAppId.Value = (decimal)SOURCE_SDK_BASE_2013_SINGLEPLAYER_APP_ID;
             this.Text = Text + " " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            ;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
