@@ -3,7 +3,7 @@
     <metadata minClientVersion="3.3">
         <id>EpicMorg.SteamPathsLib</id>
 		<title>Steam Paths Library</title>
-        <version>1.1.0.2</version>
+        <version>1.1.0.3</version>
         <authors>EpicMorgDev, AurZum, stam</authors>
 		<owners>EpicMorgDev, AurZum, stam</owners>
 		<language>en-US</language>
@@ -12,7 +12,7 @@
         <license type="expression">MIT</license>
 		<icon>images\icon.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <releaseNotes>Fixed catching exceptions.</releaseNotes>
+        <releaseNotes>Fixed loading appmanifest data if we have an invalid *.acf.</releaseNotes>
         <description>Small helper for getting some registry keys of Steam.</description>
         <copyright>Copyright © 2020 EpicMorg</copyright>
         <tags>steam epicmorg registry path helper vdf</tags>
