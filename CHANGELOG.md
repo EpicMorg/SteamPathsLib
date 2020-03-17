@@ -9,4 +9,4 @@
 * `1.1.0.3` Whats new:
   * Fixed loading appmanifest data if we have an invalid *.acf.
 * `1.1.0.4` Whats new:
-  * Code review and optimizations
+  * Code review and optimizations, dotNetCore support

@@ -17,7 +17,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <PackageTags>steam epicmorg registry path helper vdf</PackageTags>
-    <PackageReleaseNotes>Code review and optimizations</PackageReleaseNotes> 
+    <PackageReleaseNotes>Code review and optimizations, dotNetCore support</PackageReleaseNotes> 
   </PropertyGroup>
   <ItemGroup>
     <None Include="steam.png">
@@ -30,5 +30,9 @@
     <None Include="steam.ico">
       <Pack>True</Pack>
     </None>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

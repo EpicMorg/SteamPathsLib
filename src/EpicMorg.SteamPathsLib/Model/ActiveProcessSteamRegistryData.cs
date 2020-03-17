@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EpicMorg.SteamPathsLib.Model
+﻿namespace EpicMorg.SteamPathsLib.Model
 {
     public class ActiveProcessSteamRegistryData
     {
-        public string RegistryKey;
+        public string RegistryKey { get; set; }
 
-        public int PID;
+        public int PID { get; set; }
     }
 }

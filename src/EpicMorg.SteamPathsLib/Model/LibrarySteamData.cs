@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace EpicMorg.SteamPathsLib.Model
+{
+    using System.Collections.Generic;
 
-namespace EpicMorg.SteamPathsLib.Model {
-    public class LibrarySteamData {
-        public string Path;
+    public class LibrarySteamData
+    {
+        public List<SteamAppManifestData> AppManifestDataList { get; set; }
 
-        public List<SteamAppManifestData> AppManifestDataList;
+        public string Path { get; set; }
     }
 }
