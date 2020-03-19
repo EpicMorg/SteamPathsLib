@@ -1,185 +1,173 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using EpicMorg.SteamPathsLib.Model;
-using Gameloop.Vdf;
-using Gameloop.Vdf.Linq;
-using Microsoft.Win32;
+﻿namespace EpicMorg.SteamPathsLib
+{
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using EpicMorg.SteamPathsLib.Model;
+    using Gameloop.Vdf;
+    using Gameloop.Vdf.Linq;
+    using Microsoft.Win32;
 
-namespace EpicMorg.SteamPathsLib {
-    public class SteamPathsUtil {
-        private static readonly string _valveKey = @"Software\Valve";
-        private static readonly string _valveSteamKey = @"Software\Valve\Steam";
-        private static readonly string _valveSteamAppsKey = @"Software\Valve\Steam\Apps";
-        private static readonly string _valveActiveProcessPID = @"Software\Valve\Steam\ActiveProcess";
+    public static class SteamPathsUtil
+    {
+        private const string ValveKey = @"Software\Valve";
+        private const string ValveSteamKey = @"Software\Valve\Steam";
+        private const string ValveSteamAppsKey = @"Software\Valve\Steam\Apps";
+        private const string ValveActiveProcessPID = @"Software\Valve\Steam\ActiveProcess";
 
-        private static readonly string _valveSteamAppsPattern = @"Software\Valve\Steam\Apps\";
+        private const string ValveSteamAppsPattern = @"Software\Valve\Steam\Apps\";
 
-        public static string GetValveKeyRegistry() {
-            try {
-                return Registry.CurrentUser.OpenSubKey(_valveKey).ToString();
-            } catch (Exception) {
-                return null;
-            };
-        }
+        public static string GetValveKeyRegistry() => TryOrDefault(() => Registry.CurrentUser.OpenSubKey(ValveKey).ToString());
 
-        public static string GetSteamAppsKeyRegistry() {
-            try {
-                return Registry.CurrentUser.OpenSubKey(_valveSteamAppsKey).ToString();
-            } catch (Exception) {
-                return null;
-            };
-        }
+        public static string GetSteamAppsKeyRegistry() => TryOrDefault(() => Registry.CurrentUser.OpenSubKey(ValveSteamAppsKey).ToString());
 
-        public static ActiveProcessSteamRegistryData GetActiveProcessSteamData() {
-            try {
-                var regData = Registry.CurrentUser.OpenSubKey(_valveActiveProcessPID);
+        public static ActiveProcessSteamRegistryData GetActiveProcessSteamData() => TryOrDefault(() =>
+         {
+             using (var regData = Registry.CurrentUser.OpenSubKey(ValveActiveProcessPID))
+             {
+                 return new ActiveProcessSteamRegistryData
+                 {
+                     RegistryKey = regData.ToString(),
+                     PID = Convert.ToInt32(regData.GetValue("pid") ?? 0),
+                 };
+             }
+         });
 
-                var result = new ActiveProcessSteamRegistryData();
+        public static SteamAppRegistryData GetSteamAppDataById(int appId) => TryOrDefault(() =>
+        {
+            using (var regData = Registry.CurrentUser.OpenSubKey(ValveSteamAppsPattern + appId))
+            {
+                return new SteamAppRegistryData
+                {
+                    RegistryKey = regData.ToString(),
+                    Name = (regData.GetValue("Name") ?? string.Empty).ToString(),
 
-                result.RegistryKey = regData.ToString();
-                result.PID = Convert.ToInt32((regData.GetValue("pid") ?? 0));
+                    AppId = appId,
 
-                return result;
-            } catch (Exception) {
-                return null;
+                    Installed = (regData.GetValue("Installed") ?? 0).Equals(1),
+                    Updating = (regData.GetValue("Updating") ?? 0).Equals(1),
+                    Running = (regData.GetValue("Running") ?? 0).Equals(1),
+                };
             }
-        }
+        });
 
-        public static SteamAppRegistryData GetSteamAppDataById(int appId) {
-            var appKey = _valveSteamAppsPattern + appId;
+        public static SteamRegistryData GetSteamData() => TryOrDefault(() =>
+        {
+            using (var regData = Registry.CurrentUser.OpenSubKey(ValveSteamKey))
+            {
+                return new SteamRegistryData
+                {
+                    RegistryKey = regData.ToString(),
+                    LastGameNameUsed = (regData.GetValue("LastGameNameUsed") ?? string.Empty).ToString(),
+                    SourceModInstallPath = (regData.GetValue("SourceModInstallPath") ?? string.Empty).ToString(),
+                    SteamExe = (regData.GetValue("SteamExe") ?? string.Empty).ToString(),
+                    SteamPath = (regData.GetValue("SteamPath") ?? string.Empty).ToString(),
+                    Language = (regData.GetValue("Language") ?? string.Empty).ToString(),
+                    PseudoUUID = (regData.GetValue("PseudoUUID") ?? string.Empty).ToString(),
+                    ModInstallPath = (regData.GetValue("ModInstallPath") ?? string.Empty).ToString(),
 
-            try {
-                var regData = Registry.CurrentUser.OpenSubKey(appKey);
+                    RunningAppID = Convert.ToInt32((regData.GetValue("RunningAppID") ?? "0").ToString()),
 
-                var result = new SteamAppRegistryData();
-
-                result.RegistryKey = regData.ToString();
-                result.Name = (regData.GetValue("Name") ?? "").ToString();
-
-                result.AppId = appId;
-
-                result.Installed = (regData.GetValue("Installed") ?? 0).Equals(1);
-                result.Updating = (regData.GetValue("Updating") ?? 0).Equals(1);
-                result.Runnig = (regData.GetValue("Running") ?? 0).Equals(1);
-
-                return result;
-            } catch (Exception) {
-                return null;
+                    RememberPassword = (regData.GetValue("RememberPassword") ?? 0).Equals(1),
+                    AlreadyRetriedOfflineMode = (regData.GetValue("AlreadyRetriedOfflineMode") ?? 0).Equals(1),
+                };
             }
-        }
+        });
 
-        public static SteamRegistryData GetSteamData() {
-            try {
-                var regData = Registry.CurrentUser.OpenSubKey(_valveSteamKey);
+        public static ConfigSteamData GetSteamConfig() => TryOrDefault(() =>
+        {
+            var result = new ConfigSteamData();
+            var libraryPaths = new List<string>();
 
-                var result = new SteamRegistryData();
+            var steamPath = new DirectoryInfo(GetSteamData().SteamPath).FullName;
+            var configPath = Path.Combine(steamPath, "config", "config.vdf");
 
-                result.RegistryKey = regData.ToString();
-                result.LastGameNameUsed = (regData.GetValue("LastGameNameUsed") ?? "").ToString();
-                result.SourceModInstallPath = (regData.GetValue("SourceModInstallPath") ?? "").ToString();
-                result.SteamExe = (regData.GetValue("SteamExe") ?? "").ToString();
-                result.SteamPath = (regData.GetValue("SteamPath") ?? "").ToString();
-                result.Language = (regData.GetValue("Language") ?? "").ToString();
-                result.PseudoUUID = (regData.GetValue("PseudoUUID") ?? "").ToString();
-                result.ModInstallPath = (regData.GetValue("ModInstallPath") ?? "").ToString();
+            libraryPaths.Add(Path.Combine(steamPath, "steamapps"));
 
-                result.RunningAppID = Convert.ToInt32((regData.GetValue("RunningAppID") ?? "0").ToString());
+            dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
+            var configLibraryPaths = ((VObject)configObject.Software.Valve.Steam)
+                 .Children()
+                 .Where(item => item.Key.StartsWith("BaseInstallFolder"))
+                 .Select(item => item.Value.ToString())
+                 .Select(line => new DirectoryInfo(line).FullName)
+                 .Select(line => Path.Combine(line, "steamapps"));
 
-                result.RememberPassword = (regData.GetValue("RememberPassword") ?? 0).Equals(1);
-                result.AlreadyRetriedOfflineMode = (regData.GetValue("AlreadyRetriedOfflineMode") ?? 0).Equals(1);
+            libraryPaths.AddRange(configLibraryPaths);
 
-                return result;
-            } catch (Exception) {
-                return null;
-            }
-        }
-        public static ConfigSteamData GetSteamConfig() {
-            try {
-                var result = new ConfigSteamData();
-                var libraryPaths = new List<string>();
+            result.SteamLibraryFolders = libraryPaths.ToArray();
 
-                var steamPath = new DirectoryInfo(GetSteamData().SteamPath).FullName;
-                var configPath = Path.Combine(steamPath, "config", "config.vdf");
+            return result;
+        });
 
-                libraryPaths.Add(Path.Combine(steamPath, "steamapps"));
+        public static List<LibrarySteamData> GetLibrarySteamDataList() => TryOrDefault(() =>
+        {
+            var configData = GetSteamConfig();
+            var result = new List<LibrarySteamData>();
 
-                dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
-                var configLibraryPaths = ((VObject)configObject.Software.Valve.Steam)
-                    .Children()
-                    .Where(item => item.Key.StartsWith("BaseInstallFolder"))
-                    .Select(item => item.Value.ToString())
-                    .Select(line => new DirectoryInfo(line).FullName)
-                    .Select(line => Path.Combine(line, "steamapps"));
+            foreach (var path in configData.SteamLibraryFolders)
+            {
+                var libraryData = new LibrarySteamData
+                {
+                    Path = path,
+                    AppManifestDataList = new List<SteamAppManifestData>(),
+                };
 
-                libraryPaths.AddRange(configLibraryPaths);
+                var files = new DirectoryInfo(path).GetFiles("appmanifest_*.acf");
 
-                result.SteamLibraryFolders = libraryPaths.ToArray();
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        var appData = new SteamAppManifestData();
+                        dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
 
-                return result;
-            } catch (Exception) {
-                return null;
-            }
-        }
+                        appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
+                        appData.Name = appManifestObject.name.Value;
+                        appData.InstallDir = appManifestObject.installdir.Value;
 
-        public static List<LibrarySteamData> GetLibrarySteamDataList() {
-            try {
-                var configData = GetSteamConfig();
-                var result = new List<LibrarySteamData>();
+                        appData.Path = Path.Combine(path, "common", appData.InstallDir);
 
-                foreach (var path in configData.SteamLibraryFolders) {
-                    var libraryData = new LibrarySteamData();
-                    libraryData.Path = path;
-                    libraryData.AppManifestDataList = new List<SteamAppManifestData>();
-
-                    var files = new DirectoryInfo(path).GetFiles("appmanifest_*.acf");
-
-                    foreach (var file in files) {
-                        try {
-                            var appData = new SteamAppManifestData();
-                            dynamic appManifestObject = VdfConvert.Deserialize(File.ReadAllText(file.FullName)).Value;
-
-                            appData.AppId = Convert.ToInt32(appManifestObject.appid.Value);
-                            appData.Name = appManifestObject.name.Value;
-                            appData.InstallDir = appManifestObject.installdir.Value;
-
-                            appData.Path = Path.Combine(path, "common", appData.InstallDir);
-
-                            libraryData.AppManifestDataList.Add(appData);
-                        } catch (Exception e) {
-                            Console.WriteLine(e);
-                        }
+                        libraryData.AppManifestDataList.Add(appData);
                     }
-
-                    result.Add(libraryData);
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
 
-                return result;
-            } catch (Exception e) {
-                Console.WriteLine(e);
-
-                return null;
+                result.Add(libraryData);
             }
-        }
 
-        public static List<SteamAppManifestData> GetAllSteamAppManifestData() {
-            try {
-                var result = new List<SteamAppManifestData>();
+            return result;
+        });
 
-                var libraries = GetLibrarySteamDataList();
+        public static List<SteamAppManifestData> GetAllSteamAppManifestData() => TryOrDefault(() =>
+        {
+            var result = new List<SteamAppManifestData>();
 
-                foreach (var library in libraries) {
-                    result.AddRange(library.AppManifestDataList);
-                }
+            var libraries = GetLibrarySteamDataList();
 
-                return result;
-            } catch (Exception) {
-                return null;
+            foreach (var library in libraries)
+            {
+                result.AddRange(library.AppManifestDataList);
             }
-        }
+
+            return result;
+        });
 
         public static SteamAppManifestData GetSteamAppManifestDataById(int appId) => GetAllSteamAppManifestData()?.FirstOrDefault(appData => appData.AppId == appId);
+
+        private static T TryOrDefault<T>(Func<T> action)
+        {
+            try
+            {
+                return action();
+            }
+            catch
+            {
+                return default;
+            }
+        }
     }
 }
