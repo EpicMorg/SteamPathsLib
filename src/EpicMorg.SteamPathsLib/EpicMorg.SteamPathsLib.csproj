@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.Net.Sdk">
   <PropertyGroup>
     <ApplicationIcon>steam.ico</ApplicationIcon>
-    <TargetFrameworks>net46;netstandard1.3</TargetFrameworks> 
+    <TargetFrameworks>net46;net461;net462;net47;net471;net472;net48;netstandard1.3;netcoreapp3.1</TargetFrameworks> 
     <Company>EpicMorg</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance> 
@@ -9,9 +9,9 @@
     <PackageIcon>steam.png</PackageIcon>
     <PackageProjectUrl>https://github.com/EpicMorg/SteamPathsLib</PackageProjectUrl>
     <Copyright>Copyright © EpicMorg 2020</Copyright>
-    <AssemblyVersion>1.1.0.4</AssemblyVersion>
-    <FileVersion>1.1.0.4</FileVersion>
-    <Version>1.1.0.4</Version>
+    <AssemblyVersion>1.1.0.5</AssemblyVersion>
+    <FileVersion>1.1.0.5</FileVersion>
+    <Version>1.1.0.5</Version>
     <Description>Small helper for getting some registry keys of Steam.</Description>
     <Authors>EpicMorgDev, AurZum, stam, kasthack</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
