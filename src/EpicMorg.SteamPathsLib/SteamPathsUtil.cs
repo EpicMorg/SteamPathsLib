@@ -85,15 +85,18 @@
 
             libraryPaths.Add(Path.Combine(steamPath, "steamapps"));
 
-            dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
-            var configLibraryPaths = ((VObject)configObject.Software.Valve.Steam)
-                 .Children()
-                 .Where(item => item.Key.StartsWith("BaseInstallFolder"))
-                 .Select(item => item.Value.ToString())
-                 .Select(line => new DirectoryInfo(line).FullName)
-                 .Select(line => Path.Combine(line, "steamapps"));
+            try {
+                dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
+                var valve = configObject.Software.Valve ?? configObject.Software.valve;
+                var configLibraryPaths = ((VObject)valve.Steam)
+                     .Children()
+                     .Where(item => item.Key.StartsWith("BaseInstallFolder"))
+                     .Select(item => item.Value.ToString())
+                     .Select(line => new DirectoryInfo(line).FullName)
+                     .Select(line => Path.Combine(line, "steamapps"));
 
-            libraryPaths.AddRange(configLibraryPaths);
+                libraryPaths.AddRange(configLibraryPaths);
+            } catch { }
 
             result.SteamLibraryFolders = libraryPaths.ToArray();
 
