@@ -87,7 +87,14 @@
 
             try {
                 dynamic configObject = VdfConvert.Deserialize(File.ReadAllText(configPath)).Value;
-                var valve = configObject.Software.Valve ?? configObject.Software.valve;
+                dynamic valve;
+
+                try {
+                    valve = configObject.Software.Valve;
+                } catch {
+                    valve = configObject.Software.valve;
+                }
+
                 var configLibraryPaths = ((VObject)valve.Steam)
                      .Children()
                      .Where(item => item.Key.StartsWith("BaseInstallFolder"))
