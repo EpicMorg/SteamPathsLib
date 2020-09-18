@@ -25,7 +25,7 @@
       <PackagePath></PackagePath>
     </None>
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <PackageReference Include="Gameloop.Vdf" Version="0.5.0" />
+    <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <None Include="steam.ico">
       <Pack>True</Pack>
