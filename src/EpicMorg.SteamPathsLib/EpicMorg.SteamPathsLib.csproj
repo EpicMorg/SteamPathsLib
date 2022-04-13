@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.Net.Sdk">
+<Project Sdk="Microsoft.Net.Sdk">
   <PropertyGroup>
     <ApplicationIcon>steam.ico</ApplicationIcon>
     <TargetFrameworks>net46;net461;net462;net47;net471;net472;net48;netstandard1.3;netcoreapp3.1</TargetFrameworks> 
@@ -13,6 +13,7 @@
     <FileVersion>1.1.0.6</FileVersion>
     <Version>1.1.0.6</Version>
     <Description>Small helper for getting some registry keys of Steam.</Description>
+    <SignAssembly>False</SignAssembly>
     <Authors>EpicMorgDev, AurZum, stam, kasthack</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
@@ -24,8 +25,8 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <None Include="steam.ico">
       <Pack>True</Pack>
